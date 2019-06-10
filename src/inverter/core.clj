@@ -24,7 +24,7 @@
   {:x-intercept (:y-intercept d)
    :y-intercept (:x-intercept d)
    :slopes      (map #(/ 1 %) (:slopes d))
-   :thresholds  (cons (map #(- (fwd d (- % (:x-intercept d))) (:y-intercept d)) (:thresholds d)))}
+   :thresholds  ( map #(- (fwd d (- % (:x-intercept d))) (:y-intercept d)) (:thresholds d))}
   )
 
 (defn back [d x]

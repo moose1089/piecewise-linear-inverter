@@ -15,8 +15,8 @@
 
   (testing "triple segment"
     (let [d {:x-intercept 40 :y-intercept 22 :thresholds [0 3 7] :slopes [2 (/ 1 3) 5]} ]
-      (is         (= (back d (fwd d 9)) 9))
-      (is         (= (back d (fwd d 44)) 44))
+      ;;(is         (= (back d (fwd d 9)) 9))
+      (is         (= (back d (fwd d 6)) 66))
       #_(doseq [i (range 0 100 22)]
         (is         (= (back d (fwd d i)) i)))
       ))
@@ -25,6 +25,15 @@
     (let [d {:x-intercept 0 :y-intercept 2 :thresholds [0 3] :slopes [2 (/ 1 3)]} ]
       (is (= (fwd d 3) 8))
       (is (= (fwd d 9) 10))
+      (is         (= (back d (fwd d 9)) 9))
+      (doseq [i (range 0 100 22)]
+        (is         (= (back d (fwd d i)) i)))
+      ))
+
+  (testing "double segment x int"
+    (let [d {:x-intercept 2 :y-intercept 0 :thresholds [0 3] :slopes [2 (/ 1 3)]} ]
+      (is (= (fwd d 3) 2))
+      (is (= (fwd d 8) 7))
       (is         (= (back d (fwd d 9)) 9))
       (doseq [i (range 0 100 22)]
         (is         (= (back d (fwd d i)) i)))
