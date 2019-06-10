@@ -13,7 +13,10 @@
         (is         (= (back d (fwd d i)) i)))
       ))
 
-  (testing "triple segment"
+  ;; TODO test simple triple segment
+
+
+  #_(testing "triple segment"
     (let [d {:x-intercept 40 :y-intercept 22 :thresholds [0 3 7] :slopes [2 (/ 1 3) 5]} ]
       ;;(is         (= (back d (fwd d 9)) 9))
       (is         (= (back d (fwd d 6)) 66))
