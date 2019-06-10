@@ -24,7 +24,7 @@
   {:x-intercept (:y-intercept d)
    :y-intercept (:x-intercept d)
    :slopes      (map #(/ 1 %) (:slopes d))
-   :thresholds  (cons 0 (map #(* %3 (- %2 %1)) (:thresholds d) (rest (:thresholds d)) (:slopes d)))}
+   :thresholds  (cons (map #(- (fwd d (- % (:x-intercept d))) (:y-intercept d)) (:thresholds d)))}
   )
 
 (defn back [d x]
@@ -35,4 +35,4 @@
   [& args]
   (println "Hello, World!"))
 
-;(clojure.tools.trace/trace-ns 'inverter.core)
+(clojure.tools.trace/trace-ns 'inverter.core)
