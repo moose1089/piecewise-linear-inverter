@@ -9,6 +9,7 @@
   (cond
     (not (zero? x-intercept)) (fwd (-> d (assoc :x-intercept 0)) (- x x-intercept))
     (not (zero? y-intercept)) (+ y-intercept (fwd (-> d (assoc :y-intercept 0)) x))
+    (< x 0) (throw (ex-info (str "out out scope" {:x x :d d}) {:x x :d d}))
     (zero? x)       0
     (= 1 (count thresholds)) (+ y-intercept (* (first slopes) x))
     (< 1 (count thresholds)) (let [x-used (min x (- (second thresholds) (first thresholds)))
@@ -24,7 +25,7 @@
   {:x-intercept (:y-intercept d)
    :y-intercept (:x-intercept d)
    :slopes      (map #(/ 1 %) (:slopes d))
-   :thresholds  ( map #(- (fwd d (- % (:x-intercept d))) (:y-intercept d)) (:thresholds d))}
+   :thresholds  (map #(- (fwd d (- % (:x-intercept d))) (:y-intercept d)) (:thresholds d))}
   )
 
 (defn back [d x]

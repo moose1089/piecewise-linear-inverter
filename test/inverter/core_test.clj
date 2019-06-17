@@ -13,16 +13,54 @@
         (is         (= (back d (fwd d i)) i)))
       ))
 
-  ;; TODO test simple triple segment
-
-
-  #_(testing "triple segment"
-    (let [d {:x-intercept 40 :y-intercept 22 :thresholds [0 3 7] :slopes [2 (/ 1 3) 5]} ]
-      ;;(is         (= (back d (fwd d 9)) 9))
-      (is         (= (back d (fwd d 6)) 66))
-      #_(doseq [i (range 0 100 22)]
-        (is         (= (back d (fwd d i)) i)))
+  #_(testing "multi segment, no intercept, constant slopes"
+    (let [d {:x-intercept 0 :y-intercept 0 :thresholds [0 2 5 8] :slopes [1 1 1 1]} ]
+      (is         (== (back d (fwd d 9)) 9))
+      (is         (== (back d (fwd d 66)) 66))
+      (doseq [i (range 0 100 22)]
+          (is         (== (back d (fwd d i)) i)))
       ))
+
+  #_(testing "multi segment, no intercept, changing slopes"
+    (let [d {:x-intercept 0 :y-intercept 0 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
+      (is         (== (back d (fwd d 9)) 9))
+      (is         (== (back d (fwd d 66)) 66))
+      (doseq [i (range 0 100 22)]
+          (is         (== (back d (fwd d i)) i)))
+      ))
+
+  #_(testing "multi segment, y intercept, changing slopes"
+    (let [d {:x-intercept 0 :y-intercept 10 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
+      (is         (== (back d (fwd d 9)) 9))
+      (is         (== (back d (fwd d 66)) 66))
+      (doseq [i (range 0 100 22)]
+        (is         (== (back d (fwd d i)) i)))
+      ))
+
+  #_(testing "single segment, x intercept"
+    (let [d {:x-intercept 10 :y-intercept 0 :thresholds [0] :slopes [1]} ]
+      (is         (== (back d (fwd d 9)) 9))
+      (is         (== (back d (fwd d 66)) 66))
+      (doseq [i (range 0 100 22)]
+        (is         (== (back d (fwd d i)) i)))
+      ))
+
+  #_(testing "multi segment, x intercept, constant slopes"
+    (let [d {:x-intercept 10 :y-intercept 0  :thresholds [0 2 5 8] :slopes [1 1 1 1]} ]
+      (is         (== (back d (fwd d 9)) 9))
+      (is         (== (back d (fwd d 66)) 66))
+      (doseq [i (range 0 100 22)]
+        (is         (== (back d (fwd d i)) i)))
+      ))
+
+  (testing "multi segment, x intercept, changing slopes"
+    (let [d {:x-intercept 10 :y-intercept 0  :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
+      #_(is         (== (back d (fwd d 9)) 9))
+      (is         (== (back d (fwd d 20)) 20))
+      #_(doseq [i (range 0 100 22)]
+        (is         (== (back d (fwd d i)) i)))
+      ))
+
 
   #_(testing "double segment"
     (let [d {:x-intercept 0 :y-intercept 2 :thresholds [0 3] :slopes [2 (/ 1 3)]} ]
@@ -33,7 +71,7 @@
         (is         (= (back d (fwd d i)) i)))
       ))
 
-  (testing "double segment x int"
+  #_(testing "double segment x int"
     (let [d {:x-intercept 2 :y-intercept 0 :thresholds [0 3] :slopes [2 (/ 1 3)]} ]
       (is (= (fwd d 3) 2))
       (is (= (fwd d 8) 7))
