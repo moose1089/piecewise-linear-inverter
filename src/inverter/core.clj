@@ -25,7 +25,7 @@
   {:x-intercept (:y-intercept d)
    :y-intercept (:x-intercept d)
    :slopes      (map #(/ 1 %) (:slopes d))
-   :thresholds  (map #(- % y-intercept ) (map (fn [x] (eval-PWLF d x)) (map #(+ x-intercept %) (:thresholds d))))}
+   :thresholds  (map #(- % y-intercept ) (map (partial eval-PWLF d) (map #(+ x-intercept %) (:thresholds d))))}
   )
 
 (defn eval-inverse-PWLF [d x]
