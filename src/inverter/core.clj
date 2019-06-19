@@ -9,15 +9,15 @@
   (cond
     (not (zero? x-intercept)) (fwd (-> d (assoc :x-intercept 0)) (- x x-intercept))
     (not (zero? y-intercept)) (+ y-intercept (fwd (-> d (assoc :y-intercept 0)) x))
-    (< x 0) (throw (ex-info (str "out out scope" {:x x :d d}) {:x x :d d}))
-    (zero? x)       0
-    (= 1 (count thresholds)) (+ y-intercept (* (first slopes) x))
-    (< 1 (count thresholds)) (let [x-used (min x (- (second thresholds) (first thresholds)))
-                          new-d  (-> d
-                                    (update :slopes rest)
-                                    (update :thresholds rest)
-                                    (assoc :y-intercept 0))]
-                      (+ y-intercept (* (first slopes) x-used) (fwd new-d (- x x-used)))))
+    (< x 0)                   (throw (ex-info (str "out out scope" {:x x :d d})  {:x x :d d}))
+    (zero? x)                 0
+    (= 1 (count thresholds))  (+ y-intercept (* (first slopes) x))
+    (< 1 (count thresholds))  (let [x-used (min x (- (second thresholds) (first thresholds)))
+                                    new-d  (-> d
+                                              (update :slopes rest)
+                                              (update :thresholds rest)
+                                              (assoc :y-intercept 0))]
+                                (+ y-intercept (* (first slopes) x-used) (fwd new-d (- x x-used)))))
 )
 
 (defn invert
@@ -25,7 +25,9 @@
   {:x-intercept (:y-intercept d)
    :y-intercept (:x-intercept d)
    :slopes      (map #(/ 1 %) (:slopes d))
-   :thresholds  (map #(- (fwd d (- % (:x-intercept d))) (:y-intercept d)) (:thresholds d))}
+   :thresholds  (map (fn [x]
+                       (- (fwd d (+ x (:x-intercept d))) (:y-intercept d)))
+                     (:thresholds d))}
   )
 
 (defn back [d x]
@@ -36,4 +38,4 @@
   [& args]
   (println "Hello, World!"))
 
-(clojure.tools.trace/trace-ns 'inverter.core)
+;(clojure.tools.trace/trace-ns 'inverter.core)
