@@ -27,6 +27,12 @@
         (is         (== (eval-inverse-PWLF d (eval-PWLF d i)) i)))
       ))
 
+  (testing "multi segment, x and y intercept, changing slopes"
+    (let [d {:x-intercept 12 :y-intercept 10 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
+      (doseq [i (range 12 100 22)]
+        (is         (== (eval-inverse-PWLF d (eval-PWLF d i)) i)))
+      ))
+
   (testing "single segment, x intercept"
     (let [d {:x-intercept 10 :y-intercept 0 :thresholds [0] :slopes [1]} ]
       (is         (== (eval-inverse-PWLF d (eval-PWLF d 19)) 19))
