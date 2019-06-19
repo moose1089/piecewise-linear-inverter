@@ -9,8 +9,7 @@
   [{:keys [x-intercept y-intercept thresholds slopes] :as d} x]
   {:pre [(= (count slopes) (count thresholds))]}
   (cond
-    (not (zero? x-intercept)) (eval-PWLF (-> d (assoc :x-intercept 0)) (- x x-intercept))
-    (not (zero? y-intercept)) (+ y-intercept (eval-PWLF (-> d (assoc :y-intercept 0)) x))
+    (not (and (zero? x-intercept) (zero? y-intercept))) (+ y-intercept (eval-PWLF (-> d (assoc :x-intercept 0 :y-intercept 0)) (- x x-intercept) ))
     (< x 0)                   (throw (ex-info (str "out out scope" {:x x :d d})  {:x x :d d}))
     (= 1 (count thresholds))  (+ y-intercept (* (first slopes) x))
     (< 1 (count thresholds))  (let [x-used (min x (- (second thresholds) (first thresholds)))
@@ -22,13 +21,11 @@
 )
 
 (defn invert-PWLF
-  [d]
+  [{:keys [x-intercept y-intercept thresholds slopes] :as d}]
   {:x-intercept (:y-intercept d)
    :y-intercept (:x-intercept d)
    :slopes      (map #(/ 1 %) (:slopes d))
-   :thresholds  (map (fn [x]
-                       (- (eval-PWLF d (+ x (:x-intercept d))) (:y-intercept d)))
-                     (:thresholds d))}
+   :thresholds  (map #(- % y-intercept ) (map (fn [x] (eval-PWLF d x)) (map #(+ x-intercept %) (:thresholds d))))}
   )
 
 (defn eval-inverse-PWLF [d x]
