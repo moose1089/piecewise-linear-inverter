@@ -3,8 +3,9 @@
   (:gen-class))
 
 ;; NOTE PWLF = Piece-wise linear function
+;; TODO remove x intercept
+;; TODO ensure thresholds can start at any point
 
-;; TODO assert thresholds starts 0
 (defn eval-PWLF
   [{:keys [x-intercept y-intercept thresholds slopes] :as d} x]
   {:pre [(= (count slopes) (count thresholds))]}
@@ -25,7 +26,11 @@
   {:x-intercept (:y-intercept d)
    :y-intercept (:x-intercept d)
    :slopes      (map #(/ 1 %) (:slopes d))
-   :thresholds  (map #(- % y-intercept ) (map (partial eval-PWLF d) (map #(+ x-intercept %) (:thresholds d))))}
+   :thresholds  (->> d
+                     :thresholds
+                     (map #(+ x-intercept %))
+                     (map (partial eval-PWLF d))
+                     (map #(- % y-intercept)))}
   )
 
 (defn eval-inverse-PWLF [d x]
