@@ -1,7 +1,7 @@
 # inverter
 
 Contains clojure function to evaluate a piecewise defined linear function and 
-calculat the inverse
+calculate the inverse function.
 
 ## License
 
