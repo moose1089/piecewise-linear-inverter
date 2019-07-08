@@ -4,41 +4,41 @@
 
 (deftest a-test
   (testing "single segment"
-    (let [d {:x-intercept 0 :y-intercept 2 :thresholds [0] :slopes [1]}]
+    (let [d {:start-y 0 :thresholds [0] :slopes [1]}]
       (doseq [i (range 0 100 3)]
         (is (= (eval-inverse-PWLF d (eval-PWLF d i)) i)))
       )))
 
 (deftest b-test
   (testing "multi segment, no intercept, constant slopes"
-    (let [d {:x-intercept 0 :y-intercept 0 :thresholds [0 2 5 8] :slopes [1 1 1 1]} ]
+    (let [d {:start-y 0 :thresholds [0 2 5 8] :slopes [1 1 1 1]} ]
       (doseq [i (range 0 100 1)]
-          (is         (== (eval-inverse-PWLF d (eval-PWLF d i)) i)))
+          (is (== (eval-inverse-PWLF d (eval-PWLF d i)) i)))
       )))
 
 (deftest c-test
   (testing "multi segment, no intercept, changing slopes"
-    (let [d {:x-intercept 0 :y-intercept 0 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]}]
+    (let [d {:start-y 0 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]}]
       (doseq [i (range 0 100 1)]
         (is         (== (eval-inverse-PWLF d (eval-PWLF d i)) i))))))
 
 (deftest d-test
   (testing "multi segment, y intercept, changing slopes"
-    (let [d {:x-intercept 0 :y-intercept 10 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
+    (let [d {:start-y 10 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
       (doseq [i (range 0 100 22)]
         (is         (== (eval-inverse-PWLF d (eval-PWLF d i)) i)))
       )))
 
 (deftest e-test
   (testing "multi segment, x and y intercept, changing slopes"
-    (let [d {:x-intercept 12 :y-intercept 10 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
+    (let [d {:start-y 10 :thresholds [10 12 15 18] :slopes [1 2 3 0.25]} ]
       (doseq [i (range 12 100 22)]
         (is         (== (eval-inverse-PWLF d (eval-PWLF d i)) i)))
       )))
 
 (deftest f-test
   (testing "single segment, x intercept"
-    (let [d {:x-intercept 10 :y-intercept 0 :thresholds [0] :slopes [1]} ]
+    (let [d {:start-y 0 :thresholds [10] :slopes [1]} ]
       (is         (== (eval-inverse-PWLF d (eval-PWLF d 19)) 19))
       (is         (== (eval-inverse-PWLF d (eval-PWLF d 66)) 66))
       (doseq [i (range 10 100 22)]
@@ -47,7 +47,7 @@
 
 (deftest g-test
   (testing "multi segment, x intercept, constant slopes"
-    (let [d {:x-intercept 10 :y-intercept 0 :thresholds [0 2 5 8] :slopes [1 1 1 1]} ]
+    (let [d {:start-y 0 :thresholds [10 12 15 18] :slopes [1 1 1 1]} ]
       (is         (== (eval-inverse-PWLF d (eval-PWLF d 19)) 19))
       (is         (== (eval-inverse-PWLF d (eval-PWLF d 66)) 66))
       (doseq [i (range 10 100 22)]
@@ -56,8 +56,8 @@
 
 (deftest h-test
   (testing "multi segment, x intercept, changing slopes"
-    (let [d {:x-intercept 5 :y-intercept 0 :thresholds [0 2 5 8] :slopes [1 2 3 0.25]} ]
-      (is         (== (eval-inverse-PWLF d (eval-PWLF d 9)) 9))
+    (let [d {:start-y 0 :thresholds [10 12 15 18] :slopes [1 2 3 0.25]} ]
+      (is         (== (eval-inverse-PWLF d (eval-PWLF d 12)) 12))
       (is         (== (eval-inverse-PWLF d (eval-PWLF d 20)) 20))
       (doseq [i (range 10 100 22)]
         (is         (== (eval-inverse-PWLF d (eval-PWLF d i)) i)))
@@ -65,7 +65,7 @@
 
 (deftest i-test
   (testing "double segment"
-    (let [d {:x-intercept 0 :y-intercept 2 :thresholds [0 3] :slopes [2 (/ 1 3)]} ]
+    (let [d {:start-y 2 :thresholds [0 3] :slopes [2 (/ 1 3)]} ]
       (is (= (eval-PWLF d 3) 8))
       (is (= (eval-PWLF d 9) 10))
       (is         (= (eval-inverse-PWLF d (eval-PWLF d 9)) 9))
@@ -75,7 +75,7 @@
 
 (deftest j-test
   (testing "double segment x int"
-    (let [d {:x-intercept 2 :y-intercept 0 :thresholds [0 3] :slopes [2 (/ 1 3)]} ]
+    (let [d {:start-y 0 :thresholds [2 5] :slopes [2 (/ 1 3)]} ]
       (is (= (eval-PWLF d 3) 2))
       (is (= (eval-PWLF d 8) 7))
       (is         (= (eval-inverse-PWLF d (eval-PWLF d 9)) 9))
@@ -85,7 +85,7 @@
 
 (deftest k-test
   (testing "double segment other direction "
-    (let [d (invert-PWLF {:x-intercept 0 :y-intercept 2 :thresholds [0 3] :slopes [2 (/ 1 3)]})]
+    (let [d (invert-PWLF {:start-y 2 :thresholds [0 3] :slopes [2 (/ 1 3)]})]
       (is (= (eval-inverse-PWLF d (eval-PWLF d 2)) 2))
       (is (= (eval-PWLF d 8) 3))
       (is (= (eval-PWLF d 10) 9))
