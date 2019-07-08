@@ -6,7 +6,7 @@
 ;; TODO ensure thresholds can start at any point
 
 (defn eval-PWLF
-  "This evaluations the piecewise linear function for the provided x.
+  "This evaluates the piecewise linear function for the provided x.
   The definition of the function in d containing a map of
   :slopes - the vector giving the slopes for each segment. A 0 slope cannot be inverted.
   :thresholds - the x at which each segment starts.
