@@ -3,7 +3,6 @@
   (:gen-class))
 
 ;; NOTE PWLF = Piece-wise linear function, it starts from (first thresholds, start-y), is defined on ((first thresholds), infinity)
-;; TODO ensure thresholds can start at any point
 
 (defn eval-PWLF
   "This evaluates the piecewise linear function for the provided x.
